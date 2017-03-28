@@ -1,6 +1,7 @@
 importFrom("stats", "aggregate")
 importFrom("utils", "write.table")
 importFrom("GSVA", "gsva")
+importFrom("GSEABase", "geneIds")
 importFrom("pracma", "lsqlincon")
 importFrom("utils", "data")
 exportPattern("^[[:alpha:]]+")

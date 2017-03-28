@@ -16,7 +16,7 @@ NULL
 
 #' The xCell analysis pipeline
 #'
-#' \code{xCell} Returns the xCell cell types enrichment scores.
+#' \code{xCellAnalysis} Returns the xCell cell types enrichment scores.
 #'
 #' @param expr the gene expression data set. A matrix with row names as symbols and columns as samples.
 #' @param signatures a GMT object of signatures.
@@ -29,8 +29,14 @@ NULL
 #' @param save.raw TRUE to save a raw
 #'
 #' @return the adjusted xCell scores
-xCell <- function(expr, signatures, genes, spill, file.name = NULL, rnaseq = TRUE, calibration = NULL,
+xCellAnalysis <- function(expr, signatures=NULL, genes=NULL, spill=NULL, file.name = NULL, rnaseq = TRUE, calibration = NULL,
                   alpha = 1, save.raw = FALSE) {
+  if (is.null(signatures))
+    signatures = xCell$signatures
+  if (is.null(genes))
+    genes = xCell$genes
+  if (is.null(spill))
+    spill = xCell$spill
 
   # Caulcate average ssGSEA scores for cell types
   if (is.null(file.name) || save.raw==FALSE) {
@@ -69,6 +75,8 @@ xCell <- function(expr, signatures, genes, spill, file.name = NULL, rnaseq = TRU
 #' @param file.name string for the file name for saving the scores. Default is NULL.
 #' @return the raw xCell scores
 rawEnrichmentAnalysis <- function(expr, signatures, genes, file.name = NULL) {
+
+
   # Reduce the expression dataset to contain only the required genes
   shared.genes <- intersect(rownames(expr), genes)
   print(paste("Num. of genes:", length(shared.genes)))
@@ -194,7 +202,9 @@ microenvironmentScores <- function(adjustedScores) {
   toset <- !(names(op.devtools) %in% names(op))
   if(any(toset)) options(op.devtools[toset])
 
- # data(list="data/xCell.datasets.rda",envir=parent.env(environment()))
+  require(GSVA)
+  require(GSEABase)
+  require(pracma)
 
   invisible()
 }

@@ -5,7 +5,6 @@
 \alias{xCell}
 \alias{xCell-package}
 \alias{xCell}
-\alias{xCell}
 \title{xCell: A package for calculating cell type enrichments.}
 \format{list:
 \describe{
@@ -14,38 +13,11 @@
   \item{genes}{genes to use to calculate xCell}
 }}
 \usage{
-xCell(expr, signatures, genes, spill, file.name = NULL, rnaseq = TRUE,
-  calibration = NULL, alpha = 1, save.raw = FALSE)
-
-xCell(expr, signatures, genes, spill, file.name = NULL, rnaseq = TRUE,
-  calibration = NULL, alpha = 1, save.raw = FALSE)
-}
-\arguments{
-\item{expr}{the gene expression data set. A matrix with row names as symbols and columns as samples.}
-
-\item{signatures}{a GMT object of signatures.}
-
-\item{genes}{list of genes to use in the analysis.}
-
-\item{spill}{the Spillover object for adjusting the scores.}
-
-\item{file.name}{string for the file name for saving the scores. Default is NULL.}
-
-\item{rnaseq}{TRUE if the expression data is RNA-seq. Default = TRUE}
-
-\item{calibration}{a calibration value to override the spillover calibration parameters. Default = NULL}
-
-\item{alpha}{a value to override the spillover alpha parameter. Deafult = 1}
-
-\item{save.raw}{TRUE to save a raw}
-}
-\value{
-the adjusted xCell scores
+xCell
 }
 \description{
 xCell: A package for calculating cell type enrichments.
 
 xCell datasets
-
-\code{xCell} Returns the xCell cell types enrichment scores.
 }
+\keyword{datasets}
