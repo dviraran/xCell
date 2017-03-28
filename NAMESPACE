@@ -1,0 +1,6 @@
+importFrom("stats", "aggregate")
+importFrom("utils", "write.table")
+importFrom("GSVA", "gsva")
+importFrom("pracma", "lsqlincon")
+importFrom("utils", "data")
+exportPattern("^[[:alpha:]]+")
