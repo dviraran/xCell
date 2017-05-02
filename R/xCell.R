@@ -182,7 +182,7 @@ spillOver <- function(transformedScores, K, alpha = 1, file.name = NULL) {
 #' @return the microenvironment scores
 microenvironmentScores <- function(adjustedScores) {
   ImmuneScore = apply(adjustedScores[c('B-cells','CD4+ T-cells','CD8+ T-cells','DC','Eosinophils','Macrophages','Monocytes','Mast cells','Neutrophils','NK cells'),],2,sum)/2
-  StromaScore = apply(adjustedScores[c('Adipocytes','Endothelial cells','Fibroblasts','Smooth muscle','MSC'),],2,sum)/6
+  StromaScore = apply(adjustedScores[c('Adipocytes','Endothelial cells','Fibroblasts','Smooth muscle'),],2,sum)/4
   MicroenvironmentScore = ImmuneScore+StromaScore
   adjustedScores = rbind(adjustedScores,ImmuneScore,StromaScore,MicroenvironmentScore)
 }
