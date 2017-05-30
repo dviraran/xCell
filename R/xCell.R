@@ -4,15 +4,16 @@
 #' @name xCell
 NULL
 
-#' xCell datasets
+#' xCell data
 #'
 #' @format list:
 #' \describe{
 #'   \item{spill}{spillover matrix and calibration parameters}
+#'   \item{spill.array}{array spillover matrix and calibration parameters}
 #'   \item{signatures}{the signatures for calculating scores}
 #'   \item{genes}{genes to use to calculate xCell}
 #' }
-"xCell"
+"xCell.data"
 
 #' The xCell analysis pipeline
 #'
@@ -22,21 +23,26 @@ NULL
 #' @param signatures a GMT object of signatures.
 #' @param genes list of genes to use in the analysis.
 #' @param spill the Spillover object for adjusting the scores.
+#' @param rnaseq if true than use RNAseq spillover and calibration paramters, else use array parameters.
 #' @param file.name string for the file name for saving the scores. Default is NULL.
-#' @param rnaseq TRUE if the expression data is RNA-seq. Default = TRUE
 #' @param calibration a calibration value to override the spillover calibration parameters. Default = NULL
 #' @param alpha a value to override the spillover alpha parameter. Deafult = 1
 #' @param save.raw TRUE to save a raw
 #'
 #' @return the adjusted xCell scores
-xCellAnalysis <- function(expr, signatures=NULL, genes=NULL, spill=NULL, file.name = NULL, rnaseq = TRUE, calibration = NULL,
-                  alpha = 1, save.raw = FALSE) {
+xCellAnalysis <- function(expr, signatures=NULL, genes=NULL, spill=NULL, rnaseq=TRUE, file.name = NULL, scale=TRUE,
+                          alpha = 1, save.raw = FALSE) {
   if (is.null(signatures))
-    signatures = xCell$signatures
+    signatures = xCell.data$signatures
   if (is.null(genes))
-    genes = xCell$genes
-  if (is.null(spill))
-    spill = xCell$spill
+    genes = xCell.data$genes
+  if (is.null(spill)) {
+    if (rnaseq==TRUE) {
+      spill = xCell.data$spill
+    } else {
+      spill = xCell.data$spill.array
+    }
+  }
 
   # Caulcate average ssGSEA scores for cell types
   if (is.null(file.name) || save.raw==FALSE) {
@@ -48,8 +54,7 @@ xCellAnalysis <- function(expr, signatures=NULL, genes=NULL, spill=NULL, file.na
   scores <- rawEnrichmentAnalysis(expr,signatures,genes,fn)
 
   # Transform scores from raw to percentages
-  scores.transformed <- transformScores(scores, spill$fv, calibration,
-                                        rnaseq)
+  scores.transformed <- transformScores(scores, spill$fv, scale)
 
   # Adjust scores using the spill over compensation matrix
   if (is.null(file.name)) {
@@ -92,6 +97,8 @@ rawEnrichmentAnalysis <- function(expr, signatures, genes, file.name = NULL) {
   # Run ssGSEA analysis for the ranked gene expression dataset
   scores <- gsva(expr, signatures, method = "ssgsea", ssgsea.norm = FALSE)
 
+  scores = scores - apply(scores,1,min)
+
   # Combine signatures for same cell types
   cell_types <- unlist(strsplit(rownames(scores), "%"))
   cell_types <- cell_types[seq(1, length(cell_types), 3)]
@@ -113,12 +120,10 @@ rawEnrichmentAnalysis <- function(expr, signatures, genes, file.name = NULL) {
 #'
 #' @param scores raw scores of cell types calculated by rawEnrichmentAnalysis
 #' @param fit.vals the calibration values in the spill object (spill$fv).
-#' @param calibration a calibration value to override the spillover calibration parameters. Default = NULL
-#' @param rnaseq TRUE if the expression data is RNA-seq. Default = TRUE
 #' @param fn string for the file name for saving the scores. Default is NULL.
 #'
 #' @return the trasnformed xCell scores
-transformScores <- function(scores, fit.vals, calibration = NULL, rnaseq = TRUE,
+transformScores <- function(scores, fit.vals, scale=TRUE,
                             fn = NULL) {
   rows <- rownames(scores)[rownames(scores) %in% rownames(fit.vals)]
   tscores <- scores[rows, ]
@@ -126,20 +131,12 @@ transformScores <- function(scores, fit.vals, calibration = NULL, rnaseq = TRUE,
   A <- rownames(tscores)
   tscores <- (tscores - minX)/5000
   tscores[tscores < 0] <- 0
-  if (is.null(calibration)) {
-    if (rnaseq == FALSE) {
-      tscores <- ((tscores/as.vector(fit.vals[A, 3])))/2
-    } else {
-      tscores <- ((tscores/as.vector(fit.vals[A, 3]))^fit.vals[A,2])/3
-    }
-  } else {
-    if (rnaseq == FALSE) {
-      tscores <- tscores/(calibration/8)
-    } else {
-      tscores <- (tscores^fit.vals[A, 2])/(calibration/8)
-    }
-
+  if (scale==FALSE) {
+    fit.vals[A,3] = 1
   }
+
+  tscores <- (tscores^fit.vals[A,2])/(fit.vals[A,3]*2)
+
   if (!is.null(fn)) {
     write.table(format(tscores, digits = 4), file = fn, sep = "\t",
                 col.names = NA, quote = FALSE)
@@ -181,8 +178,8 @@ spillOver <- function(transformedScores, K, alpha = 1, file.name = NULL) {
 #'
 #' @return the microenvironment scores
 microenvironmentScores <- function(adjustedScores) {
-  ImmuneScore = apply(adjustedScores[c('B-cells','CD4+ T-cells','CD8+ T-cells','DC','Eosinophils','Macrophages','Monocytes','Mast cells','Neutrophils','NK cells'),],2,sum)/2
-  StromaScore = apply(adjustedScores[c('Adipocytes','Endothelial cells','Fibroblasts','Smooth muscle'),],2,sum)/4
+  ImmuneScore = apply(adjustedScores[c('B-cells','CD4+ T-cells','CD8+ T-cells','DC','Eosinophils','Macrophages','Monocytes','Mast cells','Neutrophils','NK cells'),],2,sum)/1.5
+  StromaScore = apply(adjustedScores[c('Adipocytes','Endothelial cells','Fibroblasts'),],2,sum)/2
   MicroenvironmentScore = ImmuneScore+StromaScore
   adjustedScores = rbind(adjustedScores,ImmuneScore,StromaScore,MicroenvironmentScore)
 }

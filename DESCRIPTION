@@ -1,7 +1,7 @@
 Package: xCell
 Type: Package
 Title: Cell type enrichment analysis
-Version: 1.0.1
+Version: 1.1.0
 Author: person(“Dvir”, “Aran”, email = “dvir.aran@ucsf.edu”,role = c("aut", "cre"))
 Maintainer: Dvir Aran <dvir.aran@ucsf.edu>
 Description: Tissues are a complex milieu consisting of numerous cell types. 
