@@ -31,7 +31,7 @@ NULL
 #'
 #' @return the adjusted xCell scores
 xCellAnalysis <- function(expr, signatures=NULL, genes=NULL, spill=NULL, rnaseq=TRUE, file.name = NULL, scale=TRUE,
-                          alpha = 1, save.raw = FALSE) {
+                          alpha = 0.5, save.raw = FALSE) {
   if (is.null(signatures))
     signatures = xCell.data$signatures
   if (is.null(genes))
