@@ -135,7 +135,7 @@ transformScores <- function(scores, fit.vals, scale=TRUE,
     fit.vals[A,3] = 1
   }
 
-  tscores <- (tscores^fit.vals[A,2])/(fit.vals[A,3]*2)
+  tscores <- (tscores^fit.vals[A,2])/as.numeric(fit.vals[A,3]*2)
 
   if (!is.null(fn)) {
     write.table(format(tscores, digits = 4), file = fn, sep = "\t",
@@ -178,8 +178,20 @@ spillOver <- function(transformedScores, K, alpha = 1, file.name = NULL) {
 #'
 #' @return the microenvironment scores
 microenvironmentScores <- function(adjustedScores) {
-  ImmuneScore = apply(adjustedScores[c('B-cells','CD4+ T-cells','CD8+ T-cells','DC','Eosinophils','Macrophages','Monocytes','Mast cells','Neutrophils','NK cells'),],2,sum)/1.5
-  StromaScore = apply(adjustedScores[c('Adipocytes','Endothelial cells','Fibroblasts'),],2,sum)/2
+  imm.sig <- c('B-cells','CD4+ T-cells','CD8+ T-cells','DC','Eosinophils','Macrophages','Monocytes','Mast cells','Neutrophils','NK cells')
+  strom.sig <- c('Adipocytes','Endothelial cells','Fibroblasts')
+  imm.ix <- grep(sub("+", "\\\\+", imm.sig), rownames(adjustedScores))
+  strom.ix <- grep(sub("+", "\\\\+", strom.sig), rownames(adjustedScores))
+  if (length(imm.ix)){
+      ImmuneScore <- apply(adjustedScores[imm.ix,],2,sum)/1.5
+  } else {
+      ImmuneScore <- rep(0, ncol(adjustedScores))
+  }
+  if (length(imm.ix)){
+      StromaScore <- apply(adjustedScores[strom.ix,],2,sum)/2
+  } else {
+      StromaScore <- rep(0, ncol(adjustedScores))
+  }
   MicroenvironmentScore = ImmuneScore+StromaScore
   adjustedScores = rbind(adjustedScores,ImmuneScore,StromaScore,MicroenvironmentScore)
 }

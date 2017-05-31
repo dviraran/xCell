@@ -10,6 +10,8 @@ For more informations please refer to the xCell manuscript.
 
 library(xCell)
 
+exprMatrix = read.table(expr_file,header=TRUE,row.names=1, as.is=TRUE)
+
 xCellAnalysis(exprMatrix)
 
 # Install
