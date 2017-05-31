@@ -178,13 +178,10 @@ spillOver <- function(transformedScores, K, alpha = 1, file.name = NULL) {
 #'
 #' @return the microenvironment scores
 microenvironmentScores <- function(adjustedScores) {
-  mygrep <- function(x, target){
-      return(grep(x, target))
-  }
   imm.sig <- c('B-cells','CD4+ T-cells','CD8+ T-cells','DC','Eosinophils','Macrophages','Monocytes','Mast cells','Neutrophils','NK cells')
   strom.sig <- c('Adipocytes','Endothelial cells','Fibroblasts')
-  imm.ix <- unlist(sapply(sub("+", "\\\\+", imm.sig), mygrep, target=rownames(adjustedScores))
-  strom.ix <- unlist(sapply(sub("+", "\\\\+", strom.sig), mygrep, target=rownames(adjustedScores))
+  imm.ix <- unlist(sapply(sub("+", "\\\\+", imm.sig), grep, x=rownames(adjustedScores)))
+  strom.ix <- unlist(sapply(sub("+", "\\\\+", strom.sig), grep, x=rownames(adjustedScores)))
   if (length(imm.ix)){
       ImmuneScore <- apply(adjustedScores[imm.ix,],2,sum)/1.5
   } else {
