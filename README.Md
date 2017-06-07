@@ -14,6 +14,12 @@ exprMatrix = read.table(expr_file,header=TRUE,row.names=1, as.is=TRUE)
 
 xCellAnalysis(exprMatrix)
 
+# Data input
+
+The expression matrix should be a matrix with genes in rows and samples in columns. The rownames should be gene symbols. xCell uses the expression levels ranking and not the actual values, thus normalization does not have an effect, however normalizing to gene length is required. 
+
+Importantly, xCell performs best with heterogenous dataset. Thus it is recommended to use all data combined in one run, and not break down to pieces (especially not cases and control in different runs).
+
 # Install
 
 devtools::install_github('dviraran/xCell')
