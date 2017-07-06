@@ -6,6 +6,10 @@ xCell is a gene signatures-based method learned from thousands of pure cell type
 
 For more informations please refer to the xCell manuscript.
 
+# Install
+
+devtools::install_github('dviraran/xCell')
+
 # Usage
 
 library(xCell)
@@ -43,9 +47,6 @@ Regarding this issue, scaling the scores by samples is extremely dangerous and w
 
 4. xCell is a method for detecting cell types enrichments from mixed samples, not to detect the cell of origin. xCell is still able to recognize the cell of origin many times, but it was not trained for this problem, and there is no expectation that it will perform better than other methods for that problem. In accordance, it is strongly not advised to be performed on single-cell data. 
 
-# Install
-
-devtools::install_github('dviraran/xCell')
 
 # Contributors
 
