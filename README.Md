@@ -14,11 +14,34 @@ exprMatrix = read.table(expr_file,header=TRUE,row.names=1, as.is=TRUE)
 
 xCellAnalysis(exprMatrix)
 
+
+This function performs all three steps in xCell, which can be performed seperately as well:
+
+1. rawEnrichmentAnalysis
+2. transformScores
+3. spillOver
+
+xCell loads the xCell.data object wich is a list with the spill over and calibration paramters, the signatures and the list of genes it uses. However, one can use different signautres and different spill over functions to perform the analysis.
+
+See documentation for more details on each function.
+
 # Data input
 
 The expression matrix should be a matrix with genes in rows and samples in columns. The rownames should be gene symbols. xCell uses the expression levels ranking and not the actual values, thus normalization does not have an effect, however normalizing to gene length is required. 
 
 Importantly, xCell performs best with heterogenous dataset. Thus it is recommended to use all data combined in one run, and not break down to pieces (especially not cases and control in different runs).
+
+# Notes for correct usage
+
+1. xCell produces enrichment scores, not percentages. It is not a deconvolution method, but an enrichment method. That means that the main usage is for comparing across samples, not across cell types. xCell does an attempt to make the scores resemble percentages, but it is a hard problem, and is very platform and experiment specific. We have made some tests to compare the ability of xCell for cross-cell types analysis , and found that it generally performed better in that than other methods (on limited and comparable cell types), but this type of analysis should be performed carefully.
+
+Regarding this issue, scaling the scores by samples is extremely dangerous and will inevitably will result in false interpretations.
+
+2. For the linear transformation xCell uses a calibration parameter to make it resemble percentages. If your analysis produces high scores for a cell type that is clearly false, you may tweak the calibration parameters, which can be found in the xCell.data object (xCell.data$spill$fv$V3). In the paper, we used an automatic method to learn these parameters, but if you have prior knowledge about your mixture, this is very handy to get better results. 
+
+3. xCell uses the variability among the samples for the linear transformation. xCell will only function with heterogenous mixtures. If there is no variability between the samples, xCell will not identify any signal. As noted above, it is highly recommended to use all data combined in one run. Failing to do so will again inevitably make xCell's results false. 
+
+4. xCell is a method for detecting cell types enrichments from mixed samples, not to detect the cell of origin. xCell is still able to recognize the cell of origin many times, but it was not trained for this problem, and there is no expectation that it will perform better than other methods for that problem. In accordance, it is strongly not advised to be performed on single-cell data. 
 
 # Install
 
