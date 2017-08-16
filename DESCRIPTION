@@ -27,7 +27,9 @@ Imports:
    GSVA,
    GSEABase,
    pracma,
-   utils
+   utils,
+   stats,
+   fitdistrplus
 RoxygenNote: 6.0.1
 Suggests: knitr,
     rmarkdown,
