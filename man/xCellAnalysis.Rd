@@ -5,7 +5,7 @@
 \title{The xCell analysis pipeline}
 \usage{
 xCellAnalysis(expr, signatures = NULL, genes = NULL, spill = NULL,
-  file.name = NULL, rnaseq = TRUE, calibration = NULL, alpha = 1,
+  rnaseq = TRUE, file.name = NULL, scale = TRUE, alpha = 0.5,
   save.raw = FALSE)
 }
 \arguments{
@@ -17,13 +17,13 @@ xCellAnalysis(expr, signatures = NULL, genes = NULL, spill = NULL,
 
 \item{spill}{the Spillover object for adjusting the scores.}
 
+\item{rnaseq}{if true than use RNAseq spillover and calibration paramters, else use array parameters.}
+
 \item{file.name}{string for the file name for saving the scores. Default is NULL.}
 
-\item{rnaseq}{TRUE if the expression data is RNA-seq. Default = TRUE}
+\item{scale}{if TRUE, uses scaling to trnasform scores using fit.vals}
 
-\item{calibration}{a calibration value to override the spillover calibration parameters. Default = NULL}
-
-\item{alpha}{a value to override the spillover alpha parameter. Deafult = 1}
+\item{alpha}{a value to override the spillover alpha parameter. Deafult = 0.5}
 
 \item{save.raw}{TRUE to save a raw}
 }

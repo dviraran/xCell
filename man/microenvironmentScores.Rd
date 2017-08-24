@@ -2,7 +2,7 @@
 % Please edit documentation in R/xCell.R
 \name{microenvironmentScores}
 \alias{microenvironmentScores}
-\title{Adjust scores using the spillover compensation method}
+\title{Calculate microenvironment scores}
 \usage{
 microenvironmentScores(adjustedScores)
 }

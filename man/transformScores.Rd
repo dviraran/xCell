@@ -4,17 +4,14 @@
 \alias{transformScores}
 \title{Transform scores from raw scores to fractions}
 \usage{
-transformScores(scores, fit.vals, calibration = NULL, rnaseq = TRUE,
-  fn = NULL)
+transformScores(scores, fit.vals, scale = TRUE, fn = NULL)
 }
 \arguments{
 \item{scores}{raw scores of cell types calculated by rawEnrichmentAnalysis}
 
 \item{fit.vals}{the calibration values in the spill object (spill$fv).}
 
-\item{calibration}{a calibration value to override the spillover calibration parameters. Default = NULL}
-
-\item{rnaseq}{TRUE if the expression data is RNA-seq. Default = TRUE}
+\item{scale}{if TRUE, uses scaling to trnasform scores using fit.vals}
 
 \item{fn}{string for the file name for saving the scores. Default is NULL.}
 }

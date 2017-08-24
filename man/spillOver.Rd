@@ -4,14 +4,14 @@
 \alias{spillOver}
 \title{Adjust scores using the spillover compensation method}
 \usage{
-spillOver(transformedScores, K, alpha = 1, file.name = NULL)
+spillOver(transformedScores, K, alpha = 0.5, file.name = NULL)
 }
 \arguments{
 \item{transformedScores}{the trasnformed scores of cell types calculated by transformScores}
 
 \item{K}{the Spillover matrix (spill$K).}
 
-\item{alpha}{a value to override the spillover alpha parameter. Deafult = 1}
+\item{alpha}{a value to override the spillover alpha parameter. Deafult = 0.5}
 
 \item{file.name}{string for the file name for saving the scores. Default is NULL.}
 }
