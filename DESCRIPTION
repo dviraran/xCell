@@ -29,7 +29,7 @@ Imports:
    pracma,
    utils,
    stats,
-   fitdistrplus
+   MASS
 RoxygenNote: 6.0.1
 Suggests: knitr,
     rmarkdown,
