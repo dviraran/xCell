@@ -189,7 +189,8 @@ microenvironmentScores <- function(adjustedScores) {
 #' \code{xCellSignifcanceBetaDist} Returns the FDR adjusted p-values of the chance that the cell is not present in the mixture.
 #'
 #' @param scores the xCell scores.
-#' @param beta_dist the pre-calculated beta distribution from random mixtures.
+#' @param beta_params the pre-calculated beta distribution parameters from random mixtures.
+#' @param rnaseq if beta_params is null, than uses xCell.data beta_params. If TRUE uses sequencing-based params, else array-based params.
 #' @param file.name file name to write the p-values table.
 #'
 #' @return a p-values matrix for each score.

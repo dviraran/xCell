@@ -10,9 +10,11 @@ xCellSignifcanceBetaDist(scores, beta_params = NULL, rnaseq = T,
 \arguments{
 \item{scores}{the xCell scores.}
 
-\item{file.name}{file name to write the p-values table.}
+\item{beta_params}{the pre-calculated beta distribution parameters from random mixtures.}
 
-\item{beta_dist}{the pre-calculated beta distribution from random mixtures.}
+\item{rnaseq}{if beta_params is null, than uses xCell.data beta_params. If TRUE uses sequencing-based params, else array-based params.}
+
+\item{file.name}{file name to write the p-values table.}
 }
 \value{
 a p-values matrix for each score.
