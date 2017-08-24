@@ -24,8 +24,8 @@ NULL
 #' @param spill the Spillover object for adjusting the scores.
 #' @param rnaseq if true than use RNAseq spillover and calibration paramters, else use array parameters.
 #' @param file.name string for the file name for saving the scores. Default is NULL.
-#' @param calibration a calibration value to override the spillover calibration parameters. Default = NULL
-#' @param alpha a value to override the spillover alpha parameter. Deafult = 1
+#' @param scale if TRUE, uses scaling to trnasform scores using fit.vals
+#' @param alpha a value to override the spillover alpha parameter. Deafult = 0.5
 #' @param save.raw TRUE to save a raw
 #'
 #' @return the adjusted xCell scores
@@ -118,6 +118,7 @@ rawEnrichmentAnalysis <- function(expr, signatures, genes, file.name = NULL) {
 #'
 #' @param scores raw scores of cell types calculated by rawEnrichmentAnalysis
 #' @param fit.vals the calibration values in the spill object (spill$fv).
+#' @param scale if TRUE, uses scaling to trnasform scores using fit.vals
 #' @param fn string for the file name for saving the scores. Default is NULL.
 #'
 #' @return the trasnformed xCell scores
@@ -148,7 +149,7 @@ transformScores <- function(scores, fit.vals, scale=TRUE,
 #'
 #' @param transformedScores the trasnformed scores of cell types calculated by transformScores
 #' @param K the Spillover matrix (spill$K).
-#' @param alpha a value to override the spillover alpha parameter. Deafult = 1
+#' @param alpha a value to override the spillover alpha parameter. Deafult = 0.5
 #' @param file.name string for the file name for saving the scores. Default is NULL.
 #'
 #' @return the adjusted xCell scores
