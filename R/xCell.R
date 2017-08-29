@@ -195,7 +195,7 @@ microenvironmentScores <- function(adjustedScores) {
 #'
 #' @return a p-values matrix for each score.
 xCellSignifcanceBetaDist = function(scores,beta_params=NULL,rnaseq=T,file.name = NULL) {
-  if (is.null(beta_dist)) {
+  if (is.null(beta_params)) {
     if (rnaseq==T) {
       beta_params = xCell.data$spill$beta_params
     } else {
