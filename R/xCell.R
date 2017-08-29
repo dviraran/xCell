@@ -202,7 +202,7 @@ xCellSignifcanceBetaDist = function(scores,beta_params=NULL,rnaseq=T,file.name =
       beta_params = xCell.data$spill.array$beta_params
     }
   }
-
+  scores = scores[rownames(scores) %in% colnames(xCell.data$spill$beta_params[[1]]),]
   pvals = matrix(0,nrow(scores),ncol(scores))
   rownames(pvals) = rownames(scores)
   eps = 1e-3
