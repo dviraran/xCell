@@ -164,8 +164,8 @@ spillOver <- function(transformedScores, K, alpha = 0.5, file.name = NULL) {
   scores[scores<0]=0
   rownames(scores) <- rows
   if (!is.null(file.name)) {
-    scores = round(scores*1000)
-    scores = scores/1000
+    scores = round(scores*10000)
+    scores = scores/10000
     write.table(scores, file = file.name, sep = "\t",
                 col.names = NA, quote = FALSE)
   }
