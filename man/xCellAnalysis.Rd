@@ -6,7 +6,7 @@
 \usage{
 xCellAnalysis(expr, signatures = NULL, genes = NULL, spill = NULL,
   rnaseq = TRUE, file.name = NULL, scale = TRUE, alpha = 0.5,
-  save.raw = FALSE)
+  save.raw = FALSE, parallel.sz = 4)
 }
 \arguments{
 \item{expr}{the gene expression data set. A matrix with row names as symbols and columns as samples.}
@@ -26,6 +26,8 @@ xCellAnalysis(expr, signatures = NULL, genes = NULL, spill = NULL,
 \item{alpha}{a value to override the spillover alpha parameter. Deafult = 0.5}
 
 \item{save.raw}{TRUE to save a raw}
+
+\item{parallel.sz}{integer for the number of threads to use. Default is 4.}
 }
 \value{
 the adjusted xCell scores
