@@ -27,10 +27,11 @@ NULL
 #' @param scale if TRUE, uses scaling to trnasform scores using fit.vals
 #' @param alpha a value to override the spillover alpha parameter. Deafult = 0.5
 #' @param save.raw TRUE to save a raw
+#' @param parallel.sz integer for the number of threads to use. Default is 4.
 #'
 #' @return the adjusted xCell scores
 xCellAnalysis <- function(expr, signatures=NULL, genes=NULL, spill=NULL, rnaseq=TRUE, file.name = NULL, scale=TRUE,
-                          alpha = 0.5, save.raw = FALSE) {
+                          alpha = 0.5, save.raw = FALSE, parallel.sz = 4) {
   if (is.null(signatures))
     signatures = xCell.data$signatures
   if (is.null(genes))
@@ -50,7 +51,7 @@ xCellAnalysis <- function(expr, signatures=NULL, genes=NULL, spill=NULL, rnaseq=
     fn <- paste0(file.name,'_RAW.txt')
   }
 
-  scores <- rawEnrichmentAnalysis(expr,signatures,genes,fn)
+  scores <- rawEnrichmentAnalysis(expr,signatures,genes,fn, parallel.sz = parallel.sz)
 
   # Transform scores from raw to percentages
   scores.transformed <- transformScores(scores, spill$fv, scale)
@@ -77,8 +78,9 @@ xCellAnalysis <- function(expr, signatures=NULL, genes=NULL, spill=NULL, rnaseq=
 #' @param signatures a GMT object of signatures.
 #' @param genes list of genes to use in the analysis.
 #' @param file.name string for the file name for saving the scores. Default is NULL.
+#' @param parallel.sz integer for the number of threads to use. Default is 4.
 #' @return the raw xCell scores
-rawEnrichmentAnalysis <- function(expr, signatures, genes, file.name = NULL) {
+rawEnrichmentAnalysis <- function(expr, signatures, genes, file.name = NULL, parallel.sz = 4) {
 
   # Reduce the expression dataset to contain only the required genes
   shared.genes <- intersect(rownames(expr), genes)
@@ -93,7 +95,8 @@ rawEnrichmentAnalysis <- function(expr, signatures, genes, file.name = NULL) {
   expr <- apply(expr, 2, rank)
 
   # Run ssGSEA analysis for the ranked gene expression dataset
-  scores <- GSVA::gsva(expr, signatures, method = "ssgsea", ssgsea.norm = FALSE,parallel.sz=4)
+  scores <- GSVA::gsva(expr, signatures, method = "ssgsea",
+                       ssgsea.norm = FALSE,parallel.sz = parallel.sz)
 
   scores = scores - apply(scores,1,min)
 
