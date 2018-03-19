@@ -8,16 +8,17 @@ For more informations please refer to the xCell manuscript.
 
 # Install
 
+```R
 devtools::install_github('dviraran/xCell')
+```
 
 # Usage
 
+```R
 library(xCell)
-
 exprMatrix = read.table(expr_file,header=TRUE,row.names=1, as.is=TRUE)
-
 xCellAnalysis(exprMatrix)
-
+```
 
 This function performs all three steps in xCell, which can be performed seperately as well:
 
