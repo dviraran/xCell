@@ -14,7 +14,7 @@ For more informations please refer to the xCell manuscript.
 devtools::install_github('dviraran/xCell')
 ```
 
-Note: if the installation fails, try setting `R options(unzip = "internal")` before calling the install function.
+Note: if the installation fails, try setting `options(unzip = "internal")` before calling the install function.
 
 # Usage
 
