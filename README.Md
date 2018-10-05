@@ -1,10 +1,10 @@
-**Important note:** xCell was trained for use with bulk gene expression data. Due to many reasons we believe it is not a great solution for using it directly to infer celll types in scRNA-seq data. For such data we recommed using our method SingleR which was developed exactly for this purpose - https://github.com/dviraran/SingleR 
+**Important note:** xCell was trained for use with bulk gene expression data. Due to many reasons we believe it is not a great solution for using it directly to infer cell types in scRNA-seq data. For such data we recommed using our method SingleR which was developed exactly for this purpose - https://github.com/dviraran/SingleR 
 
 # xCell - cell types enrichment analysis
 
 xCell is a webtool that performs cell type enrichment analysis from gene expression data for 64 immune and stroma cell types. 
 
-xCell is a gene signatures-based method learned from thousands of pure cell types from various sources. xCell applies a novel technique for reducing associations between closley related cell types. xCell signatures were validated using extensive in-silico simulations and also cytometry immunophenotyping, and were shown to outperform previous methods. xCell allows researchers to reliably portray the cellular heterogeneity landscape of tissue expression profiles. 
+xCell is a gene signatures-based method learned from thousands of pure cell types from various sources. xCell applies a novel technique for reducing associations between closely related cell types. xCell signatures were validated using extensive in-silico simulations and also cytometry immunophenotyping, and were shown to outperform previous methods. xCell allows researchers to reliably portray the cellular heterogeneity landscape of tissue expression profiles. 
 
 For more informations please refer to the xCell manuscript.
 
@@ -30,7 +30,7 @@ This function performs all three steps in xCell, which can be performed seperate
 2. transformScores
 3. spillOver
 
-xCell loads the xCell.data object wich is a list with the spill over and calibration paramters, the signatures and the list of genes it uses. However, one can use different signautres and different spill over functions to perform the analysis.
+xCell loads the xCell.data object which is a list with the spill over and calibration parameters, the signatures and the list of genes it uses. However, one can use different signautres and different spill over functions to perform the analysis.
 
 In addition xCell provides significance assessment of the null hypothesis that the cell type is not in the mixture:
 
@@ -47,7 +47,7 @@ Importantly, xCell performs best with heterogenous dataset. Thus it is recommend
 
 # Notes for correct usage
 
-1. xCell produces enrichment scores, not percentages. It is not a deconvolution method, but an enrichment method. That means that the main usage is for comparing across samples, not across cell types. xCell does an attempt to make the scores resemble percentages, but it is a hard problem, and is very platform and experiment specific. We have made some tests to compare the ability of xCell for cross-cell types analysis , and found that it generally performed better in that than other methods (on limited and comparable cell types), but this type of analysis should be performed carefully.
+1. xCell produces enrichment scores, not percentages. It is not a deconvolution method, but an enrichment method. That means that the main usage is for comparing across samples, not across cell types. xCell does an attempt to make the scores resemble percentages, but it is a hard problem, and is very platform and experiment specific. We have made some tests to compare the ability of xCell for cross-cell types analysis, and found that it generally performed better in that than other methods (on limited and comparable cell types), but this type of analysis should be performed carefully.
 
 Regarding this issue, scaling the scores by samples is extremely dangerous and will inevitably will result in false interpretations.
 
