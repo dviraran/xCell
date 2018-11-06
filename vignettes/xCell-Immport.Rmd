@@ -1,0 +1,92 @@
+---
+title: "Validating xCell with CyTOF immunoprofilings"
+author: "Dvir Aran"
+date: "11/6/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In the xCell paper we present an analysis of validating xCell with cell counts measured by CyTOF immunoprofiling. Here we present a short tutorial to reproduce those results.
+
+## Data gathering
+
+From the Immport web portal we downloaded the study files of SDY311 and SDY420. Each Immport study has a file named *fcs_analyzed_result.txt* which contains counts of cells. We extract the number of cells from all live cells to create a matrix of the fraction of cells for each samples. 
+
+In addition we downloaded the gene expression data, also available with the Immport study files. This is an Illumnia array, and was normalized using Matlab functions. Both objects can be downloaded from the vignettes directory in the GitHub repository.
+
+```{r,echo=T, results='hide'}
+sdy311 = readRDS('~/Documents/xCell/sdy311.rds')
+sdy420 = readRDS('~/Documents/xCell/sdy420.rds')
+```
+
+## Generating xCell scores
+
+We do two data filtering in the SDY311 dataset before analysis. First, there are 10 patients with replicates in the gene expression data. We use the `rawEnrichmentAnalysis` function to create the xCell scores and then for each patient with a replicate we take the average of the raw scores.
+
+Second, there were two samples in the SDY311 that are suspected as outliers, thus we removed them from the analysis.
+
+The next step is transforming the raw scores and applying the spill over compensation. To get best results it is best to run the spill over compensation only on relevant cell types (e.g. if we know there are no macrophages in the mixtures, it is best to remove them from the analysis). Thus, we subset the scores matrix to only cell types that are also measured in the CyTOF dataset.
+
+Note that we use the xCell.data$spill.array data since the expression data was generated with microarrays.
+
+```{r,echo=T, results='hide'}
+get.xCell.scores = function(sdy) {
+  raw.scores = rawEnrichmentAnalysis(as.matrix(sdy$expr),
+                                     xCell.data$signatures,
+                                     xCell.data$genes)
+  
+  colnames(raw.scores) = gsub("\\.1","",colnames(raw.scores))
+  raw.scores = aggregate(t(raw.scores)~colnames(raw.scores),FUN=mean)
+  rownames(raw.scores) = raw.scores[,1]
+  raw.scores = raw.scores[,-1]
+  raw.scores = t(raw.scores)
+  
+  cell.types = rownames(sdy$fcs) 
+  
+  cell.types.use = intersect(rownames(raw.scores),rownames(sdy$fcs))
+  transformed.scores = transformScores(raw.scores[cell.types.use,],xCell.data$spill.array$fv)
+  scores = spillOver(transformed.scores,xCell.data$spill.array$K)
+  #s = y
+  A = intersect(colnames(sdy$fcs),colnames(scores))
+  scores = scores[,A]
+  
+  scores
+} 
+
+
+library(xCell)
+
+sdy311$fcs= sdy311$fcs[,-which(colnames(sdy311$fcs) %in% c("SUB134240","SUB134283"))]
+
+scores311 = get.xCell.scores(sdy311)
+scores420 = get.xCell.scores(sdy420)
+
+```
+
+## Correlating xCell scores and CyTOF immunoprofilings
+
+Using these scores we can now find the correlation between the xCell scores and the cell types fractions from the CyTOF immunoprofilings:
+
+```{r,echo=T, results='hide'}
+library(psych)
+library(ggplot2)
+
+correlateScoresFCS = function(scores,fcs,tit) {
+  fcs = fcs[rownames(scores),colnames(scores)]
+
+res = corr.test(t(scores),t(fcs),adjust='none')
+
+df = data.frame(R=diag(res$r),p.value=diag(res$p),Cell.Types=rownames(res$r))
+ggplot(df)+geom_col(aes(y=df$R,x=Cell.Types,fill=p.value<0.05))+theme_classic()+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  ylab('Pearson R')+ggtitle(tit)
+}
+```
+
+```{r}
+correlateScoresFCS(scores311,sdy311$fcs,'SDY311')
+correlateScoresFCS(scores420,sdy420$fcs,'SDY420')
+```
