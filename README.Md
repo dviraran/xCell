@@ -57,6 +57,9 @@ Regarding this issue, scaling the scores by samples is extremely dangerous and w
 
 4. xCell is a method for detecting cell types enrichments from mixed samples, not to detect the cell of origin. xCell is still able to recognize the cell of origin many times, but it was not trained for this problem, and there is no expectation that it will perform better than other methods for that problem. In accordance, it is strongly not advised to be performed on single-cell data. 
 
+# Vignettes
+
+**11.6.2018 update:** Due to popular demand, we created a simple vignette to reproduce the analysis that was performed in the xCell paper of [correlating the xCell scores with the CyTOF immunoprofiling data available from ImmPort](http://comphealth.ucsf.edu/sample-apps/xCellView/xCell-Immport.html). The data files are available in the 'vignette' directory.
 
 # Contributors
 
