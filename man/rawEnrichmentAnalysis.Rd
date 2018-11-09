@@ -5,7 +5,7 @@
 \title{Calculated raw xCell enrichment scores}
 \usage{
 rawEnrichmentAnalysis(expr, signatures, genes, file.name = NULL,
-  parallel.sz = 4)
+  parallel.sz = 4, parallel.type = "SOCK")
 }
 \arguments{
 \item{expr}{the gene expression data set. A matrix with row names as symbols and columns as samples.}
@@ -17,6 +17,8 @@ rawEnrichmentAnalysis(expr, signatures, genes, file.name = NULL,
 \item{file.name}{string for the file name for saving the scores. Default is NULL.}
 
 \item{parallel.sz}{integer for the number of threads to use. Default is 4.}
+
+\item{parallel.type}{Type of cluster architecture when using snow. 'SOCK' or 'FORK'. Fork is faster, but is not supported in windows.}
 }
 \value{
 the raw xCell scores

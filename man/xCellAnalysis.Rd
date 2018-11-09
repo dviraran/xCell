@@ -6,7 +6,8 @@
 \usage{
 xCellAnalysis(expr, signatures = NULL, genes = NULL, spill = NULL,
   rnaseq = TRUE, file.name = NULL, scale = TRUE, alpha = 0.5,
-  save.raw = FALSE, parallel.sz = 4)
+  save.raw = FALSE, parallel.sz = 4, parallel.type = "SOCK",
+  cell.types.use = NULL)
 }
 \arguments{
 \item{expr}{the gene expression data set. A matrix with row names as symbols and columns as samples.}
@@ -28,6 +29,12 @@ xCellAnalysis(expr, signatures = NULL, genes = NULL, spill = NULL,
 \item{save.raw}{TRUE to save a raw}
 
 \item{parallel.sz}{integer for the number of threads to use. Default is 4.}
+
+\item{parallel.type}{Type of cluster architecture when using snow. 'SOCK' or 'FORK'. Fork is faster, but is not supported in windows.}
+
+\item{cell.types.use}{a character list of the cell types to use in the analysis. If NULL runs xCell with all cell types.
+The spillover compensation step may over compensate, thus it is always better to run xCell with a list of cell types that are expected
+to be in the mixture. The names of cell types in this list must be a subset of the cell types that are inferred by xCell.}
 }
 \value{
 the adjusted xCell scores

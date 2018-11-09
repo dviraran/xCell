@@ -4,8 +4,8 @@
 \alias{xCellSignifcanceRandomMatrix}
 \title{Calculate significance p-values for the null hypothesis that the cell type is not present in the mixture using a random matrix.}
 \usage{
-xCellSignifcanceRandomMatrix(scores, expr, spill, alpha = 0.5, nperm = 250,
-  file.name = NULL)
+xCellSignifcanceRandomMatrix(scores, expr, spill, alpha = 0.5,
+  nperm = 250, file.name = NULL)
 }
 \arguments{
 \item{scores}{the xCell scores.}
