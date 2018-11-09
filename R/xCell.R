@@ -28,10 +28,15 @@ NULL
 #' @param alpha a value to override the spillover alpha parameter. Deafult = 0.5
 #' @param save.raw TRUE to save a raw
 #' @param parallel.sz integer for the number of threads to use. Default is 4.
+#' @param parallel.type Type of cluster architecture when using snow. 'SOCK' or 'FORK'. Fork is faster, but is not supported in windows.
+#' @param cell.types.use a character list of the cell types to use in the analysis. If NULL runs xCell with all cell types.
+#' The spillover compensation step may over compensate, thus it is always better to run xCell with a list of cell types that are expected
+#' to be in the mixture. The names of cell types in this list must be a subset of the cell types that are inferred by xCell.
 #'
 #' @return the adjusted xCell scores
 xCellAnalysis <- function(expr, signatures=NULL, genes=NULL, spill=NULL, rnaseq=TRUE, file.name = NULL, scale=TRUE,
-                          alpha = 0.5, save.raw = FALSE, parallel.sz = 4) {
+                          alpha = 0.5, save.raw = FALSE, parallel.sz = 4, parallel.type = 'SOCK',
+                          cell.types.use = NULL) {
   if (is.null(signatures))
     signatures = xCell.data$signatures
   if (is.null(genes))
@@ -51,7 +56,14 @@ xCellAnalysis <- function(expr, signatures=NULL, genes=NULL, spill=NULL, rnaseq=
     fn <- paste0(file.name,'_RAW.txt')
   }
 
-  scores <- rawEnrichmentAnalysis(expr,signatures,genes,fn, parallel.sz = parallel.sz)
+  if (!is.null(cell.types.use)) {
+    A = intersect(cell.types.use,rownames(xCell.data$spill$K))
+    if (length(A)<length(cell.types.use)) {
+      return ('ERROR - not all cell types listed are available')
+    }
+  }
+
+  scores <- rawEnrichmentAnalysis(expr,signatures,genes,fn, parallel.sz = parallel.sz, parallel.type = 'SOCK')
 
   # Transform scores from raw to percentages
   scores.transformed <- transformScores(scores, spill$fv, scale)
@@ -63,10 +75,12 @@ xCellAnalysis <- function(expr, signatures=NULL, genes=NULL, spill=NULL, rnaseq=
     fn <- file.name
   }
 
-  scores.adjusted <- spillOver(scores.transformed, spill$K, alpha,fn )
-
-  scores.adjusted = microenvironmentScores(scores.adjusted)
-
+  if (is.null(cell.types.use)) {
+    scores.adjusted <- spillOver(scores.transformed, spill$K, alpha,fn )
+    scores.adjusted = microenvironmentScores(scores.adjusted)
+  } else {
+    scores.adjusted <- spillOver(scores.transformed[cell.types.use,], spill$K, alpha,fn )
+  }
   return(scores.adjusted)
 }
 
@@ -79,8 +93,10 @@ xCellAnalysis <- function(expr, signatures=NULL, genes=NULL, spill=NULL, rnaseq=
 #' @param genes list of genes to use in the analysis.
 #' @param file.name string for the file name for saving the scores. Default is NULL.
 #' @param parallel.sz integer for the number of threads to use. Default is 4.
+#' @param parallel.type Type of cluster architecture when using snow. 'SOCK' or 'FORK'. Fork is faster, but is not supported in windows.
+
 #' @return the raw xCell scores
-rawEnrichmentAnalysis <- function(expr, signatures, genes, file.name = NULL, parallel.sz = 4) {
+rawEnrichmentAnalysis <- function(expr, signatures, genes, file.name = NULL, parallel.sz = 4, parallel.type = 'SOCK') {
 
   # Reduce the expression dataset to contain only the required genes
   shared.genes <- intersect(rownames(expr), genes)
@@ -96,7 +112,7 @@ rawEnrichmentAnalysis <- function(expr, signatures, genes, file.name = NULL, par
 
   # Run ssGSEA analysis for the ranked gene expression dataset
   scores <- GSVA::gsva(expr, signatures, method = "ssgsea",
-                       ssgsea.norm = FALSE,parallel.sz = parallel.sz)
+                       ssgsea.norm = FALSE,parallel.sz = parallel.sz,parallel.type = parallel.type)
 
   scores = scores - apply(scores,1,min)
 
@@ -162,7 +178,7 @@ spillOver <- function(transformedScores, K, alpha = 0.5, file.name = NULL) {
   rows <- rownames(transformedScores)[rownames(transformedScores) %in%
                                         rownames(K)]
   scores <- apply(transformedScores[rows, ], 2, function(x) pracma::lsqlincon(K[rows,rows],
-                                                                      x, lb = 0))
+                                                                              x, lb = 0))
 
   scores[scores<0]=0
   rownames(scores) <- rows
