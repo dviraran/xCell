@@ -57,7 +57,7 @@ xCellAnalysis <- function(expr, signatures=NULL, genes=NULL, spill=NULL, rnaseq=
   }
 
   if (!is.null(cell.types.use)) {
-    A = intersect(cell.types.use,rownames(xCell.data$spill$K))
+    A = intersect(cell.types.use,rownames(spill$K))
     if (length(A)<length(cell.types.use)) {
       return ('ERROR - not all cell types listed are available')
     }
