@@ -30,12 +30,12 @@ This function performs all three steps in xCell, which can be performed seperate
 2. transformScores
 3. spillOver
 
-xCell loads the xCell.data object which is a list with the spill over and calibration parameters, the signatures and the list of genes it uses. However, one can use different signautres and different spill over functions to perform the analysis.
+xCell loads the xCell.data object which is a list with the spill over and calibration parameters, the signatures and the list of genes it uses. However, one can use different signatures and different spill over functions to perform the analysis.
 
 In addition xCell provides significance assessment of the null hypothesis that the cell type is not in the mixture:
 
 1. xCellSignifcanceBetaDist - uses predefined beta distribution parameters from random mixtures generated using the reference data sets. Recommended. 
-2. xCellSignifcanceRandomMatrix - uses random maxtrix and caculates beta distribution parameters. 
+2. xCellSignifcanceRandomMatrix - uses random matrix and caculates beta distribution parameters. 
 
 See documentation for more details on each function.
 
