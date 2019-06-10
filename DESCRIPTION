@@ -23,6 +23,7 @@ Encoding: UTF-8
 URL: http://xCell.ucsf.edu
 LazyData: true
 Depends: R (>= 3.1.0)
+biocViews:
 Imports:
    GSVA,
    GSEABase,
