@@ -93,7 +93,9 @@ xCellAnalysis <- function(expr, signatures=NULL, genes=NULL, spill=NULL, rnaseq=
 #' @param genes list of genes to use in the analysis.
 #' @param file.name string for the file name for saving the scores. Default is NULL.
 #' @param parallel.sz integer for the number of threads to use. Default is 4.
-#' @param parallel.type Type of cluster architecture when using snow. 'SOCK' or 'FORK'. Fork is faster, but is not supported in windows.
+#' @param parallel.type Type of cluster architecture when using snow. 'SOCK' or 'FORK'.
+#'   Fork is faster, but is not supported in windows.
+#'   This argument is ignored in GSVA versions >= 1.36.0. Register a `BiocParallel` backend instead. 
 
 #' @return the raw xCell scores
 rawEnrichmentAnalysis <- function(expr, signatures, genes, file.name = NULL, parallel.sz = 4, parallel.type = 'SOCK') {
@@ -111,8 +113,16 @@ rawEnrichmentAnalysis <- function(expr, signatures, genes, file.name = NULL, par
   expr <- apply(expr, 2, rank)
 
   # Run ssGSEA analysis for the ranked gene expression dataset
-  scores <- GSVA::gsva(expr, signatures, method = "ssgsea",
-                       ssgsea.norm = FALSE,parallel.sz = parallel.sz,parallel.type = parallel.type)
+  if(packageVersion("GSVA") >= "1.36.0") {
+    # GSVA >= 1.36.0 does not support `parallel.type` any more. 
+    # Instead it automatically uses the backend registered by BiocParallel. 
+    scores <- GSVA::gsva(expr, signatures, method = "ssgsea",
+                         ssgsea.norm = FALSE,parallel.sz = parallel.sz)
+  } else {
+    scores <- GSVA::gsva(expr, signatures, method = "ssgsea",
+                         ssgsea.norm = FALSE,parallel.sz = parallel.sz,parallel.type = parallel.type)
+  }
+
 
   scores = scores - apply(scores,1,min)
 
