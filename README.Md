@@ -1,5 +1,7 @@
 **Important note:** xCell was trained for use with bulk gene expression data. Due to many reasons we believe it is not a great solution for using it directly to infer cell types in scRNA-seq data. For such data we recommed using our method SingleR which was developed exactly for this purpose - https://github.com/dviraran/SingleR 
 
+**User guide:** For more details on using xCell, please refer to Aran D. (2020) Cell-Type Enrichment Analysis of Bulk Transcriptomes Using xCell. In: Boegel S. (eds) Bioinformatics for Cancer Immunotherapy. Methods in Molecular Biology, vol 2120. https://link.springer.com/protocol/10.1007/978-1-0716-0327-7_19 
+
 # xCell - cell types enrichment analysis
 
 xCell is a webtool that performs cell type enrichment analysis from gene expression data for 64 immune and stroma cell types. 
