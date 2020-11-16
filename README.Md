@@ -65,6 +65,6 @@ Regarding this issue, scaling the scores by samples is extremely dangerous and w
 
 # Contributors
 
-xCell is developed by the Butte lab. Please contact Dvir Aran: dvir.aran at ucsf edu for any questions or suggestions.
+xCell is developed by the Butte lab. Please contact Dvir Aran: dvir.aran at technion.ac.il for any questions or suggestions.
 
 To cite xCell: Aran, Hu and Butte, xCell: digitally portraying the tissue cellular heterogeneity landscape. Genome Biology (2017) 18:220
