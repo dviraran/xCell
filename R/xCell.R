@@ -113,7 +113,11 @@ rawEnrichmentAnalysis <- function(expr, signatures, genes, file.name = NULL, par
   expr <- apply(expr, 2, rank)
 
   # Run ssGSEA analysis for the ranked gene expression dataset
-  if(packageVersion("GSVA") >= "1.36.0") {
+  if(packageVersion("GSVA") >= "1.50.0") {
+    # Legacy GSVA function was depreciated in version 1.50 and entirely removed in version 1.52.
+    gsvapar <- GSVA::ssgseaParam(exprData = expr, geneSets = signatures, normalize = FALSE)
+    scores <- GSVA::gsva(gsvapar)
+  } else if(packageVersion("GSVA") >= "1.36.0") {
     # GSVA >= 1.36.0 does not support `parallel.type` any more. 
     # Instead it automatically uses the backend registered by BiocParallel. 
     scores <- GSVA::gsva(expr, signatures, method = "ssgsea",
